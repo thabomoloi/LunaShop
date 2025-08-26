@@ -1,0 +1,177 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.oasisnourish</groupId>
+  <artifactId>LunaShopAPI</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>LunaShopAPI</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <maven.compiler.release>21</maven.compiler.release>
+
+    <!-- Properties -->
+    <javalin.version>6.7.0</javalin.version>
+    <javalin.openapi.version>6.7.0</javalin.openapi.version>
+  </properties>
+
+  <repositories>
+    <!-- Snapshots -->
+    <repository>
+      <id>reposilite-repository</id>
+      <url>https://maven.reposilite.com/snapshots</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <!-- https://mvnrepository.com/artifact/io.github.cdimascio/dotenv-java -->
+    <dependency>
+      <groupId>io.github.cdimascio</groupId>
+      <artifactId>dotenv-java</artifactId>
+      <version>3.2.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.javalin/javalin-bundle -->
+    <dependency>
+      <groupId>io.javalin</groupId>
+      <artifactId>javalin-bundle</artifactId>
+      <version>${javalin.version}</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.javalin.community.openapi/javalin-openapi-plugin -->
+    <dependency>
+      <groupId>io.javalin.community.openapi</groupId>
+      <artifactId>javalin-openapi-plugin</artifactId>
+      <version>${javalin.openapi.version}</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.javalin.community.openapi/javalin-swagger-plugin -->
+    <dependency>
+      <groupId>io.javalin.community.openapi</groupId>
+      <artifactId>javalin-swagger-plugin</artifactId>
+      <version>${javalin.openapi.version}</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.javalin.community.openapi/javalin-redoc-plugin -->
+    <dependency>
+      <groupId>io.javalin.community.openapi</groupId>
+      <artifactId>javalin-redoc-plugin</artifactId>
+      <version>${javalin.openapi.version}</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.13.4</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-params -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <version>5.13.4</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>5.19.0</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <version>5.19.0</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.14.0</version>
+        <configuration>
+          <annotationProcessorPaths>
+            <annotationProcessorPath>
+              <groupId>io.javalin.community.openapi</groupId>
+              <artifactId>openapi-annotation-processor</artifactId>
+              <version>${javalin.openapi.version}</version>
+            </annotationProcessorPath>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.5.3</version> <!-- latest stable -->
+        <configuration>
+          <environmentVariables>
+            <APP_ENV>test</APP_ENV>
+          </environmentVariables>
+        </configuration>
+      </plugin>
+
+      <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-shade-plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.6.0</version>
+        <configuration>
+          <filters>
+            <filter>
+              <artifact>*:*</artifact>
+              <excludes>
+                <exclude>module-info.class</exclude>
+                <exclude>META-INF/*.MF</exclude>
+                <exclude>META-INF/*.SF</exclude>
+                <exclude>META-INF/*.DSA</exclude>
+                <exclude>META-INF/*.RSA</exclude>
+                <exclude>META-INF/LICENSE*</exclude>
+                <exclude>META-INF/NOTICE*</exclude>
+              </excludes>
+            </filter>
+          </filters>
+        </configuration>
+        <executions>
+          <!-- Attach the shade goal into the package phase -->
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>com.lunashop.main.App</mainClass>
+                </transformer>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                  <resource>META-INF/okio.kotlin_module</resource>
+                </transformer>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                  <resource>META-INF.versions.9.module-info</resource>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
