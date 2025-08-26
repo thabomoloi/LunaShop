@@ -1,4 +1,4 @@
-package com.lunashop.main;
+package com.lunashop.application;
 
 import com.fasterxml.jackson.databind.node.TextNode;
 import io.javalin.Javalin;
@@ -9,14 +9,14 @@ import io.javalin.openapi.plugin.redoc.ReDocPlugin;
 import io.javalin.openapi.plugin.swagger.SwaggerPlugin;
 import io.javalin.security.RouteRole;
 
-public class App {
+public class Application {
     enum Rules implements RouteRole {
         ANONYMOUS,
         USER,
     }
 
     public static void main(String[] args) {
-        AppConfig  appConfig = new AppConfig();
+        ApplicationConfig applicationConfig = new ApplicationConfig();
 
         var app = Javalin.createAndStart(config -> {
             // config.routing.contextPath = "/custom";
@@ -87,6 +87,6 @@ public class App {
             }
         });
 
-        app.get("api/user", appConfig.usersController::getUser);
+        app.get("api/user", applicationConfig.usersController::getUser);
     }
 }

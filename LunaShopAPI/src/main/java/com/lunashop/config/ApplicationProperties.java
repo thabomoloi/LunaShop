@@ -7,13 +7,13 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PropertiesConfigProvider implements ConfigProvider {
+public class ApplicationProperties {
     private final Properties properties = new Properties();
     private static final Pattern ENV_VAR_PATTERN = Pattern.compile("\\$\\{([^:}]+)(:([^}]*))?}");
-    private final Env env;
+    private final Environment environment;
 
-    public PropertiesConfigProvider(Env env) {
-        this.env = env;
+    public ApplicationProperties(Environment environment) {
+        this.environment = environment;
 
         // Load defaults
         loadProperties("application.properties");
@@ -45,35 +45,31 @@ public class PropertiesConfigProvider implements ConfigProvider {
         while (matcher.find()) {
             String envKey = matcher.group(1).trim();
             String defaultValue = matcher.group(3) != null ? matcher.group(3) : "";
-            String replacement = env.getDotenv().get(envKey, defaultValue);
+            String replacement = environment.getDotenv().get(envKey, defaultValue);
             matcher.appendReplacement(sb, Matcher.quoteReplacement(replacement));
         }
         matcher.appendTail(sb);
         return sb.toString();
     }
 
-    @Override
     public String getString(String key) {
         return this.properties.getProperty(key);
     }
 
-    @Override
     public String getString(String key, String defaultValue) {
         return this.properties.getProperty(key, defaultValue);
     }
 
-    @Override
     public int getInt(String key) {
         return Integer.parseInt(this.properties.getProperty(key));
     }
 
-    @Override
     public int getInt(String key, int defaultValue) {
         return Integer.parseInt(this.properties.getProperty(key, defaultValue+""));
     }
 
     private String getEnvProperties() {
-        return switch (env.getEnv()) {
+        return switch (environment.getEnvironmentType()) {
             case Development -> "application-dev.properties";
             case Production -> "application-prod.properties";
             case Test -> "application-test.properties";

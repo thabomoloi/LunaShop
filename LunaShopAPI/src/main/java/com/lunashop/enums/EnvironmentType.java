@@ -1,6 +1,6 @@
 package com.lunashop.enums;
 
-public enum Environment {
+public enum EnvironmentType {
     Development,
     Test,
     Production

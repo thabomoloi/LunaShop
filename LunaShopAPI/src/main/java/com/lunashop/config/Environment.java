@@ -1,28 +1,28 @@
 package com.lunashop.config;
 
-import com.lunashop.enums.Environment;
+import com.lunashop.enums.EnvironmentType;
 import io.github.cdimascio.dotenv.Dotenv;
 
-public class Env {
-    private final Environment env;
+public class Environment {
+    private final EnvironmentType environmentType;
     private final Dotenv dotenv;
 
-    public Env() {
+    public Environment() {
         String appEnv = System.getenv().getOrDefault("APP_ENV", "development");
 
         String dotenvFile;
 
         switch (appEnv) {
             case "production" -> {
-                this.env = Environment.Production;
+                this.environmentType = EnvironmentType.Production;
                 dotenvFile = ".env.production";
             }
             case "test" -> {
-                this.env = Environment.Test;
+                this.environmentType = EnvironmentType.Test;
                 dotenvFile = ".env.test";
             }
             default -> {
-                this.env = Environment.Development;
+                this.environmentType = EnvironmentType.Development;
                 dotenvFile = ".env.development";
             }
         };
@@ -35,19 +35,19 @@ public class Env {
     }
 
     public boolean isTest() {
-        return this.env == Environment.Test;
+        return this.environmentType == EnvironmentType.Test;
     }
 
     public boolean isProduction() {
-        return this.env == Environment.Production;
+        return this.environmentType == EnvironmentType.Production;
     }
 
     public boolean isDevelopment() {
-        return this.env == Environment.Development;
+        return this.environmentType == EnvironmentType.Development;
     }
 
-    public Environment getEnv() {
-        return this.env;
+    public EnvironmentType getEnvironmentType() {
+        return this.environmentType;
     }
 
     public Dotenv getDotenv() {

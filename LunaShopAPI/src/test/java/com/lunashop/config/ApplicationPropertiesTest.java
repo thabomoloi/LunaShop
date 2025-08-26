@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class PropertiesConfigProviderTest {
-    private final Env env = new Env();
-    private final PropertiesConfigProvider propertiesConfig = new PropertiesConfigProvider(env);
+public class ApplicationPropertiesTest {
+    private final Environment environment = new Environment();
+    private final ApplicationProperties propertiesConfig = new ApplicationProperties(environment);
 
     @Test
     public void getString_whenExists_ReturnsString() {
